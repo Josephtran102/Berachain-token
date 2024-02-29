@@ -1,66 +1,54 @@
-## Foundry
+mkdir foundry_project && cd foundry_project
+npm init -y
+# (Install Foundry)
+curl -L https://foundry.paradigm.xyz | bash 
+foundryup
+#  Initialize a Foundry project:
+forge init; # forge init --force; # if there is already an existing .git repository associated
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+# Project structure:
+.
+├── README.md
+├── foundry.toml
+├── lib
+│   └── forge-std
+├── script
+│   └── Counter.s.sol
+├── src
+│   └── Counter.sol
+└── test
+    └── Counter.t.sol
 
-Foundry consists of:
+# Install the dependencies needed for an ERC20 contract from OpenZeppelin, by funning the following:
+forge install OpenZeppelin/openzeppelin-contracts;
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+# Creating the ERC20 Contract:
+Convert the existing .src/Counter.sol --> "TokenName.sol" and replace the code with the following Solidity code.
+Rename: test/Counter.t.sol --> test/TokenName.t.sol ---> Edit test script
 
-## Documentation
+# Compile contract:
+forge compile;
 
-https://book.getfoundry.sh/
+# Testing the ERC20 Contract:
+forge test -vvv;
 
-## Usage
+# Configuring Foundry for Berachain Contract Deployment:
+Rename: script/Counter.s.sol script/TokenName.s.sol;
+Write deploy script
 
-### Build
+# With the provided private key, replace the WALLET_PRIVATE_KEY in .env file:
+File: ./.env
+WALLET_PRIVATE_KEY="0x...."
 
-```shell
-$ forge build
-```
+# Deployment to Berachain Testnet should be the same process, but with a specified RPC URL endpoint:
+forge script script/JOSE.s.sol --rpc-url "https://rpc.ankr.com/berachain_testnet" --broadcast;
 
-### Test
+# Verifying ERC20 Contract:
+forge verify-contract "Contract Address" "Contract name" \
+    --etherscan-api-key="XXXXXXXX" \
+    --watch \
+    --constructor-args $(cast abi-encode "constructor(string,string,uint256)" "JOSEToken" "JOSE" 100000000000000000000) \
+    --retries=2 \
+    --verifier-url=https://api.routescan.io/v2/network/testnet/evm/80085/etherscan/api/;
 
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+# Token-berachain
