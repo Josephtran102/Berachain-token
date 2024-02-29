@@ -1,3 +1,4 @@
+# Create Foundry project
 mkdir foundry_project && cd foundry_project
 npm init -y
 # (Install Foundry)
